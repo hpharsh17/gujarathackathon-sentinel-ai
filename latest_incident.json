@@ -1,0 +1,24 @@
+{
+  "type": "ACCIDENT_CANDIDATE",
+  "severity": "HIGH",
+  "camera_id": "cam05",
+  "track_ids": [
+    "cam05:pos_0_11",
+    "cam05:pos_4_10",
+    "cam05:pos_7_8",
+    "cam05:pos_7_9"
+  ],
+  "reason": "abrupt vehicle deceleration with collision or stop pattern",
+  "confirmed_frames": 3,
+  "detected_at": 1789320490.0188086,
+  "location": {
+    "camera_id": "cam05",
+    "location_name": "Visat Teen Rasta",
+    "district": "Ahmedabad",
+    "latitude": 23.095,
+    "longitude": 72.583,
+    "maps_link": "https://www.google.com/maps?q=23.095,72.583"
+  },
+  "dispatch_status": "RECORDED",
+  "dispatch_time": 1789320490.0188086
+}

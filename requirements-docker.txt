@@ -1,0 +1,21 @@
+# Core AI & Computer Vision (torch and torchvision installed via cu118 wheel in Dockerfile)
+ultralytics
+onnxruntime
+opencv-python-headless
+easyocr
+numpy
+scipy
+pillow
+shapely
+
+# Backend API & Networking
+fastapi
+uvicorn[standard]
+websockets
+pydantic
+python-dotenv
+requests
+
+# Database & Cloud Integration
+supabase
+psutil

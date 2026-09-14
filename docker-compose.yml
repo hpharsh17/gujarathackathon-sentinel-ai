@@ -1,0 +1,44 @@
+services:
+  # ============================================================================
+  # Sentinel Vision AI — Core Inference & FastAPI Gateway Service
+  # ============================================================================
+  sentinel-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinel_c2_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
+    volumes:
+      - .:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # ============================================================================
+  # Sentinel Vision AI — React Tactical GUI Frontend Service
+  # ============================================================================
+  sentinel-frontend:
+    image: node:20-alpine
+    container_name: sentinel_c2_frontend
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://sentinel-backend:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - sentinel-backend

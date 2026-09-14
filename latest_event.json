@@ -1,0 +1,51 @@
+{
+  "camera_id": "cam01",
+  "pts_ms": 15416.0,
+  "system_timestamp": 1789321609.0169973,
+  "location": {
+    "name": "Chiman Bhai Bridge",
+    "district": "Ahmedabad",
+    "latitude": 23.069309,
+    "longitude": 72.587112,
+    "maps_link": "https://www.google.com/maps?q=23.069309,72.587112"
+  },
+  "device_registry_gis": {
+    "camera_id": "cam01",
+    "location_name": "Chiman Bhai Bridge",
+    "district": "Ahmedabad",
+    "latitude": 23.069309,
+    "longitude": 72.587112,
+    "maps_link": "https://www.google.com/maps?q=23.069309,72.587112"
+  },
+  "ai_detections": {
+    "people_count": 0,
+    "people": [],
+    "vehicles": [
+      {
+        "track_id": 4,
+        "vehicle_type": "Bus",
+        "color": "Blue",
+        "confidence": 0.61,
+        "bounding_box": [
+          0,
+          701,
+          257,
+          986
+        ],
+        "plate_text": null,
+        "plate_box": null,
+        "stolen_alert": null,
+        "cross_camera_matches": [],
+        "cross_camera_trail": []
+      }
+    ],
+    "license_plates": [],
+    "objects": [],
+    "alerts": [],
+    "crowd_flow": {
+      "status": "NORMAL",
+      "people_count": 0
+    },
+    "incident": null
+  }
+}

@@ -1,0 +1,13 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+frontend/node_modules
+frontend/dist
+.gemini
+archived_pngs
+frames_cache
+*.log
