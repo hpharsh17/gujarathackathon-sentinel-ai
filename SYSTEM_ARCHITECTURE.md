@@ -34,7 +34,7 @@ flowchart TD
 
     %% ── LAYER 2: QUEUE ──
     subgraph L2["⚡ LAYER 2: HIGH-SPEED INGESTION BUFFER"]
-        QUEUE["In-Memory Lossy-Drop FIFO Queue (`frame_queue.py`)\nAtomic Writes · Sub-25ms Latency · Redis/Kafka Bus"]:::queue
+        QUEUE["In-Memory Lossy-Drop FIFO Queue (`frame_queue.py`)\nAtomic Writes · Sub-25ms Latency · Scalable to Kafka/Redis"]:::queue
     end
 
     %% ── LAYER 3: AI PIPELINE ──
@@ -83,9 +83,9 @@ flowchart TD
         subgraph L5["📢 LAYER 5: EMERGENCY DISPATCHER"]
             direction TB
             DISPATCH["Automated Dispatcher (`alert_dispatcher.py`)\nIncident Triage & Webhook Router"]:::dispatch
-            DISPATCH --> D_POLICE["🚔 Police (112)"]:::dispatch
-            DISPATCH --> D_FIRE["🚒 Fire & Rescue (101)"]:::dispatch
-            DISPATCH --> D_EMS["🚑 Ambulance (108)"]:::dispatch
+            DISPATCH --> D_POLICE["🚔 Police Control Room"]:::dispatch
+            DISPATCH --> D_FIRE["🚒 Fire & Rescue Department"]:::dispatch
+            DISPATCH --> D_EMS["🚑 Ambulance & EMS"]:::dispatch
         end
     end
 
@@ -155,7 +155,7 @@ flowchart TD
         C5["5. Stationary Abandoned Object Detection (>60s)"]:::sCore
         C7["7. ArcFace 512-d Facial Vector Recognition"]:::sCore
         C10["10. Kinematic Crash Deceleration & Fire Bloom Detection"]:::sCore
-        C12["12. Automated Multi-Agency Dispatch (Police 112, Fire 101, EMS 108)"]:::sCore
+        C12["12. Automated Multi-Agency Dispatch (Police, Fire & EMS Control Rooms)"]:::sCore
     end
 
     Engine --> G1
@@ -201,16 +201,16 @@ flowchart TD
     %% Corridor correlation
     ANPR --> CC["Cap 9: Cross-Camera Correlator\nDistance + Elapsed Time -> Speed km/h"]:::model
     
-    ANPR & Attr & FR & Pose & CrashAlert & Flow & OB & CC --> Supa["Layer 3 — Supabase Cloud DB\npgvector Match + GIS Geocoded Storage"]:::db
+    ANPR & Attr & FR & Pose & CrashAlert & Flow & OB & CC --> Supa["Layer 4 — Supabase Cloud DB\npgvector Match + GIS Geocoded Storage"]:::db
 
     %% Automated Emergency Dispatch
     CrashAlert --> Dispatcher["Layer 4 — Emergency Dispatcher (`alert_dispatcher.py`)\nTriage by incident severity"]:::dispatch
     Flow -->|Stampede Warning| Dispatcher
     ANPR -->|Stolen Watchlist Hit| Dispatcher
 
-    Dispatcher --> P_Out["🚔 Police C2 (112)"]:::dispatch
-    Dispatcher --> F_Out["🚒 Fire & Rescue (101)"]:::dispatch
-    Dispatcher --> A_Out["🚑 Ambulance EMS (108)"]:::dispatch
+    Dispatcher --> P_Out["🚔 Police Control Room"]:::dispatch
+    Dispatcher --> F_Out["🚒 Fire & Rescue Department"]:::dispatch
+    Dispatcher --> A_Out["🚑 Ambulance & EMS"]:::dispatch
 ```
 
 ---
@@ -221,12 +221,12 @@ When an anomaly or watchlist hit is confirmed, the **Emergency Dispatcher** (`al
 
 | Incident Category | Detection Mechanism | Primary Agency | Secondary Agency | Automated Payload Dispatched |
 |---|---|---|---|---|
-| **Stolen Vehicle Identified** | ANPR OCR + `watchlist_vehicles` lookup | 🚔 **Police (112)** | 🚦 Traffic Dept | Camera ID, Geolocation, Plate Number, Vehicle Color, Corridor Heading, Timestamp |
-| **High-Speed Vehicle Collision** | Kinematic abrupt deceleration + bbox IoU overlap | 🚑 **Ambulance (108)** | 🚔 Police (112) | Collision GPS, Estimated Speed at Impact, Camera Snapshot URL, Lanes Blocked |
-| **Fire / Smoke Hazard** | Chromatic flame bloom + stationary thermal rise | 🚒 **Fire Service (101)** | 🚔 Police (112) | Thermal Coordinates, Hazard Footprint ($m^2$), Nearest Hydrant Node, Wind Direction |
-| **Crowd Stampede / Panic Surge** | Fluid flow alignment ($\phi > 0.85$) + sudden acceleration | 🚔 **Police (112)** | 🚑 Ambulance (108) | Density Index ($\text{ppl}/m^2$), Exit Bottleneck Vector, Evacuation Routing |
-| **Criminal / Wanted Suspect Hit** | ArcFace 512-d embedding match (cosine dist $< 0.35$) | 🚔 **Police Special Cell** | — | Suspect ID, Criminal Record Link, Confidence Score, Camera Node GPS |
-| **Hit-and-Run Evasion** | Crash detected + Vehicle observed exiting frame | 🚔 **Police (112)** | 🚦 Traffic Dept | Fleeing Plate Number, Next Intercept Camera, Velocity Estimate (km/h) |
+| **Stolen Vehicle Identified** | ANPR OCR + `watchlist_vehicles` lookup | 🚔 **Police Control Room** | 🚦 Traffic Dept | Camera ID, Geolocation, Plate Number, Vehicle Color, Corridor Heading, Timestamp |
+| **High-Speed Vehicle Collision** | Kinematic abrupt deceleration + bbox IoU overlap | 🚑 **Ambulance & EMS** | 🚔 Police Control Room | Collision GPS, Estimated Speed at Impact, Camera Snapshot URL, Lanes Blocked |
+| **Fire / Smoke Hazard** | Chromatic flame bloom + stationary thermal rise | 🚒 **Fire & Rescue Dept** | 🚔 Police Control Room | Thermal Coordinates, Hazard Footprint ($m^2$), Camera Node GPS, Timestamp |
+| **Crowd Stampede / Panic Surge** | Fluid flow alignment ($\phi > 0.85$) + sudden acceleration | 🚔 **Police Control Room** | 🚑 Ambulance & EMS | Density Index ($\text{ppl}/m^2$), Exit Bottleneck Vector, Evacuation Routing |
+| **Criminal / Wanted Suspect Hit** | ArcFace 512-d embedding match (cosine dist $< 0.35$) | 🚔 **Police Special Cell** | — | Suspect ID, Confidence Score, Camera Node GPS, Timestamp |
+| **Hit-and-Run Evasion** | Crash detected + Vehicle observed exiting frame | 🚔 **Police Control Room** | 🚦 Traffic Dept | Fleeing Plate Number, Next Intercept Camera, Velocity Estimate (km/h) |
 
 ---
 
@@ -278,7 +278,7 @@ flowchart LR
 
     SupaEvents["☁️ Supabase / Incident-Based Event Backbone\nStores ONLY Incident & Watchlist Triggers"]:::src --> GW["🛡️ FastAPI Gateway (`server.py`)\nJWT Token Validation + Dynamic RBAC Filter"]:::gw
 
-    GW -->|POLICE_ADMIN Role| P["🚔 Police Control Room\n✅ Face Recognition & Criminal Watchlists\n✅ Stolen Vehicles & Corridor Intercepts\n✅ Full RTSP Camera Matrix Feeds\n✅ Automated 112 Dispatch Stream"]:::dept
+    GW -->|POLICE_ADMIN Role| P["🚔 Police Control Room\n✅ Face Recognition & Criminal Watchlists\n✅ Stolen Vehicles & Corridor Intercepts\n✅ Full RTSP Camera Matrix Feeds\n✅ Automated Incident Dispatch Alerts"]:::dept
 
     GW -->|TRAFFIC_DEPT Role| T["🚦 Traffic Department\n✅ ANPR License Plates & Vehicle Counts\n✅ Accident Detection & Congestion Metrics\n🔒 Criminal Watchlists Masked\n🔒 Face Recognition Vectors Stripped"]:::dept
 
